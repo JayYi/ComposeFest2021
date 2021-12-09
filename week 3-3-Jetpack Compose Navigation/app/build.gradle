@@ -86,7 +86,7 @@ android {
 }
 
 dependencies {
-
+    implementation "androidx.navigation:navigation-compose:2.4.0-beta04"
     implementation "androidx.appcompat:appcompat:$rootProject.appCompatVersion"
     implementation "androidx.core:core-ktx:$rootProject.ktxVersion"
     implementation "com.google.android.material:material:$rootProject.materialVersion"
