@@ -1,0 +1,12 @@
+.gradle
+/local.properties
+
+.idea/*
+!.idea/copyright
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+/.idea/gradle.xml
