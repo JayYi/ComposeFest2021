@@ -115,4 +115,7 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test:$rootProject.composeVersion"
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$rootProject.composeVersion"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$rootProject.composeVersion"
+
+    // Kotlin extensions for androidx.test.core
+    androidTestImplementation "androidx.test:core-ktx:1.4.0"
 }
