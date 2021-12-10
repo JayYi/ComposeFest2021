@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -31,6 +30,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.example.compose.rally.RallyScreen.Accounts
 import com.example.compose.rally.RallyScreen.Bills
 import com.example.compose.rally.data.UserData
@@ -85,7 +85,10 @@ fun RallyApp() {
                             // Make argument type safe
                             type = NavType.StringType
                         }
-                    )
+                    ),
+                    deepLinks = listOf(navDeepLink {
+                        uriPattern = "rally://$accountsName/{name}"
+                    })
                 ) { entry -> // Look up "name" in NavBackStackEntry's arguments
                     val accountName = entry.arguments?.getString("name")
                     // Find first name match in UserData
@@ -124,10 +127,4 @@ private fun navigateToSingleAccount(
     accountName: String
 ) {
     navController.navigate("${Accounts.name}/$accountName")
-}
-
-@Preview
-@Composable
-fun RallyAppPreview() {
-    RallyApp()
 }
