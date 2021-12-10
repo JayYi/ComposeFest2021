@@ -19,24 +19,23 @@ package com.example.compose.rally
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.compose.rally.RallyScreen.Accounts
 import com.example.compose.rally.RallyScreen.Bills
 import com.example.compose.rally.data.UserData
 import com.example.compose.rally.ui.accounts.AccountsBody
+import com.example.compose.rally.ui.accounts.SingleAccountBody
 import com.example.compose.rally.ui.bills.BillsBody
 import com.example.compose.rally.ui.components.RallyTabRow
 import com.example.compose.rally.ui.overview.OverviewBody
@@ -73,31 +72,62 @@ fun RallyApp() {
                 )
             }
         ) { innerPadding ->
+            val accountsName = RallyScreen.Accounts.name
             NavHost(
                 navController = navController,
                 startDestination = RallyScreen.Overview.name,
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier.padding(innerPadding),
             ) {
+                composable(
+                    "$accountsName/{name}",
+                    arguments = listOf(
+                        navArgument("name") {
+                            // Make argument type safe
+                            type = NavType.StringType
+                        }
+                    )
+                ) { entry -> // Look up "name" in NavBackStackEntry's arguments
+                    val accountName = entry.arguments?.getString("name")
+                    // Find first name match in UserData
+                    val account = UserData.getAccount(accountName)
+                    // Pass account to SingleAccountBody
+                    SingleAccountBody(account = account)
+                }
                 composable(RallyScreen.Overview.name) {
                     OverviewBody(
                         onClickSeeAllAccounts = { navController.navigate(Accounts.name) },
-                        onClickSeeAllBills = { navController.navigate(Bills.name) }
+                        onClickSeeAllBills = { navController.navigate(Bills.name) },
+                        onAccountClick = { name ->
+                            navigateToSingleAccount(navController, name)
+                        }
                     )
                 }
                 composable(Accounts.name) {
-                    AccountsBody(accounts = UserData.accounts)
+                    AccountsBody(accounts = UserData.accounts) { name ->
+                        navigateToSingleAccount(
+                            navController = navController,
+                            accountName = name
+                        )
+                    }
                 }
                 composable(Bills.name) {
                     BillsBody(bills = UserData.bills)
                 }
             }
-//            Box(Modifier.padding(innerPadding)) {
-//                currentScreen.content(
-//                    onScreenChange = { screen ->
-//                        currentScreen = RallyScreen.valueOf(screen)
-//                    }
-//                )
-//            }
         }
     }
+}
+
+
+private fun navigateToSingleAccount(
+    navController: NavHostController,
+    accountName: String
+) {
+    navController.navigate("${Accounts.name}/$accountName")
+}
+
+@Preview
+@Composable
+fun RallyAppPreview() {
+    RallyApp()
 }
